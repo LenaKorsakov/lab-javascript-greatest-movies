@@ -74,16 +74,30 @@ function orderAlphabetically(moviesArray) {
 }
 
 const durationToMinutes = (time) => {
-  // '2h 22min'
-  if (time.endsWith('min')) {
-    const [hour, min] = time.split(' ');
-    const cleanHour = Number(hour.slice(0, -1));
-    const cleanMin = Number(min.slice(0, -3));
+  let cleanTime = time.split(' ');
 
-    return cleanHour * 60 + cleanMin;
-  }
+  cleanTime = cleanTime.map((entry) => {
+    if (entry.includes('h')) {
+      return parseInt(entry) * 60;
+    } else {
+      return parseInt(entry);
+    }
+  });
 
-  return Number(time.slice(0, -1)) * 60;
+  cleanTime = cleanTime.reduce((acc, val) => acc + val, 0);
+
+  return cleanTime;
+
+  // if (time.endsWith('min')) {
+  //   const [hour, min] = time.split(' ');
+
+  //   const cleanHour = Number(hour.slice(0, -1));
+  //   const cleanMin = Number(min.slice(0, -3));
+
+  //   return cleanHour * 60 + cleanMin;
+  // }
+
+  // return Number(time.slice(0, -1)) * 60;
 };
 
 // BONUS - Iteration 7: Time Format - Turn duration of the movies from hours to minutes
@@ -107,9 +121,11 @@ function bestYearAvg(moviesArray) {
     return `The best year was ${moviesArray[0].year} with an average score of ${moviesArray[0].score}`;
   }
 
+  const moviesArrayWithoutDublicates = [...new Set(moviesArray)];
+
   const moviesDictionary = {};
 
-  for (const movie of moviesArray) {
+  for (const movie of moviesArrayWithoutDublicates) {
     const key = movie.year.toString();
     if (key in moviesDictionary) {
       moviesDictionary[key].push(movie);
